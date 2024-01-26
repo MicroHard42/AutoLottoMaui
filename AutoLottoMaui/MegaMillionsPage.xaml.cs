@@ -1,3 +1,5 @@
+using AutoLottoMaui.ViewModels;
+
 namespace AutoLottoMaui;
 
 public partial class MegaMillionsPage : ContentPage
