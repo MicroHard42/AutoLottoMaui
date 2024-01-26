@@ -7,9 +7,19 @@
     Shell.FlyoutBehavior="Disabled"
     Title="AutoLottoMaui">
 
-    <ShellContent
-        Title="Home"
-        ContentTemplate="{DataTemplate local:MainPage}"
-        Route="MainPage" />
+    <TabBar>
+    
+    <Tab Title="Mega Millions">
+           <ShellContent ContentTemplate="{DataTemplate local:MegaMillionsPage}" Route="MegaMillionsPage"/>
+    </Tab>
 
+    <Tab Title="Powerball">
+           <ShellContent ContentTemplate="{DataTemplate local:PowerBallPage}" Route="PowerBallPage"/>
+    </Tab>
+
+    <Tab Title="My Tickets">
+           <ShellContent ContentTemplate="{DataTemplate local:MyTickets}" Route="MyTickets"/>
+    </Tab>
+
+    </TabBar>
 </Shell>
