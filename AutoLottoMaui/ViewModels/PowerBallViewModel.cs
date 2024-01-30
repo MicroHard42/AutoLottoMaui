@@ -1,10 +1,10 @@
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Windows.Input;
 using AutoLottoMaui.Models;
 using AutoLottoMaui.Services;
 
 namespace AutoLottoMaui.ViewModels;
-public class MegaMillionsViewModel : BaseViewModel
+public class PowerBallViewModel : BaseViewModel
 {
     private ObservableCollection<Drawing> _drawing;
     private string _statusMessage;
@@ -31,14 +31,14 @@ public class MegaMillionsViewModel : BaseViewModel
     }
     public ICommand FetchDataCommand { get; }
 
-    public MegaMillionsViewModel()
+    public PowerBallViewModel()
     {
         _drawing = new ObservableCollection<Drawing>();
-        _httpService = new HttpService("https://data.ny.gov/resource/5xaw-6ayf.json");
+        _httpService = new HttpService("https://data.ny.gov/resource/d6yy-54nr.json");
         FetchDataAsync();
     }
 
-    
+
 
     private async void FetchDataAsync()
     {
@@ -60,3 +60,5 @@ public class MegaMillionsViewModel : BaseViewModel
         }
     }
 }
+
+

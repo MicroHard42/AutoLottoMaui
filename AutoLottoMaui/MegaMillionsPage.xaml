@@ -1,15 +1,35 @@
-<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:AutoLottoMaui.ViewModels;assembly=AutoLottoMaui"
              x:Class="AutoLottoMaui.MegaMillionsPage"
              x:Name="MegaMillions">
+    <ContentPage.BindingContext>
+        <vm:MegaMillionsViewModel/>
+    </ContentPage.BindingContext>
 
-<StackLayout>
-    <Label Text="{Binding StatusMessage}" />
-    <CollectionView ItemsSource="{Binding Drawing}">
-        <Label Text="{Binding Drawing.WinningNumbers}"/>
-    </CollectionView>
-    <Button Text="Fetch Drawings" Command="{Binding FetchDrawingsCommand}" />
-</StackLayout>
 
+<VerticalStackLayout Padding="20">
+
+    <Image
+        HeightRequest="100"
+        HorizontalOptions="Center"
+        Aspect="AspectFit"
+        Source="mega_banner.png">
+    </Image>
+
+
+        <DatePicker x:Name="datePicker" Format="D" />
+        <ListView x:Name="lotteryListView"
+                  ItemsSource="{Binding DrawingHistory}"
+                  ItemSelected="OnItemSelected">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <TextCell Text="{Binding WinningNumbers}"
+                              Detail="{Binding DrawDate, StringFormat='{0:yyyy-MM-dd}'}" />
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+
+    </VerticalStackLayout>
 </ContentPage>

@@ -1,12 +1,29 @@
-<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:AutoLottoMaui.ViewModels;assembly=AutoLottoMaui"
              x:Class="AutoLottoMaui.MyTickets"
              Title="MyTickets">
-    <VerticalStackLayout>
-        <Label 
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
+
+
+    <VerticalStackLayout Spacing="25" Padding="30" VerticalOptions="Center">
+
+        <!-- Label to display the scanned barcode -->
+        <Label x:Name="barcodeLabel"
+               Text="{Binding BarcodeValue}"
+               FontSize="Large"
+               FontAttributes="Bold"
+               HorizontalOptions="Center"
+               VerticalOptions="CenterAndExpand"
+               />
+
+        <!-- Button to start scanning -->
+        <Button Text="Scan Barcode"
+                Clicked="OnButtonClicked"
+                HorizontalOptions="Center" />
+
     </VerticalStackLayout>
+
+
+
 </ContentPage>

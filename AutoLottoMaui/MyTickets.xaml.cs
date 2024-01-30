@@ -1,9 +1,28 @@
+using AutoLottoMaui.Services;
+using AutoLottoMaui.ViewModels;
+
 namespace AutoLottoMaui;
 
 public partial class MyTickets : ContentPage
 {
-	public MyTickets()
+    ScannerHandler _scannerHandler;
+    BarcodeViewModel barcodeViewModel;
+    public MyTickets()
 	{
-		InitializeComponent();
-	}
+        barcodeViewModel  = new BarcodeViewModel();
+        _scannerHandler = new ScannerHandler((BarcodeViewModel)barcodeViewModel);
+        this.BindingContext = barcodeViewModel;
+        InitializeComponent();
+    }
+
+    public async void OnButtonClicked(object sender, EventArgs args)
+    {
+        await MainThread.InvokeOnMainThreadAsync(async () =>
+        {
+            _scannerHandler.ShowScanner();
+        });
+        barcodeViewModel.BarcodeValue += "9";
+        
+    }
+    
 }

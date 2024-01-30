@@ -1,12 +1,30 @@
-<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="AutoLottoMaui.PowerBallPage"
              Title="PowerBallPage">
-    <VerticalStackLayout>
-        <Label 
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
+    <VerticalStackLayout Padding="20">
+
+    <Image
+        HeightRequest="100"
+        HorizontalOptions="Center"
+        Aspect="AspectFit"
+        Source="powerball_banner.png">
+    </Image>
+
+
+        <DatePicker x:Name="datePicker" Format="D" />
+        <ListView x:Name="lotteryListView"
+                  ItemsSource="{Binding DrawingHistory}"
+                  ItemSelected="OnItemSelected">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <TextCell Text="{Binding WinningNumbers}"
+                              Detail="{Binding DrawDate, StringFormat='{0:yyyy-MM-dd}'}" />
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+
     </VerticalStackLayout>
+
 </ContentPage>

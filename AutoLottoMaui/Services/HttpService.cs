@@ -1,6 +1,7 @@
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using AutoLottoMaui.Models;
 
 namespace AutoLottoMaui.Services;
@@ -8,21 +9,25 @@ namespace AutoLottoMaui.Services;
 public class HttpService
 {
     private readonly HttpClient _httpClient;
-    private const string megaMilUrl = "https://data.ny.gov/resource/d6yy-54nr.json";
+    //public string megaMilUrl;
+    //"https://data.ny.gov/resource/d6yy-54nr.json";
+    //public string powerBallURL;
+    //https://data.ny.gov/resource/5xaw-6ayf.json
+    private string lottoDataURL;
 
-    public HttpService()
+    public HttpService(string url)
     {
         _httpClient = new HttpClient();
+        lottoDataURL = url;
     }
 
-    public async Task<Drawing> FetchDataAsync()
+    public async Task<List<Drawing>> FetchDataAsync()
     {
         try
         {
-            var response = await _httpClient.GetAsync(megaMilUrl);
-            response.EnsureSuccessStatusCode();
-            var json = await response.Content.ReadAsStringAsync();
-            return JsonSerializer.Deserialize<Drawing>(json);
+            var response = await _httpClient.GetStringAsync(lottoDataURL);
+            var drawingData = Drawing.FromJson(response);
+            return drawingData;
         }
         catch (Exception ex)
         {
