@@ -21,12 +21,28 @@ public class HttpService
         lottoDataURL = url;
     }
 
-    public async Task<List<Drawing>> FetchDataAsync()
+    public async Task<List<PbDrawing>> FetchPBDataAsync()
     {
         try
         {
             var response = await _httpClient.GetStringAsync(lottoDataURL);
-            var drawingData = Drawing.FromJson(response);
+            var drawingData = PbDrawing.FromJson(response);
+            return drawingData;
+        }
+        catch (Exception ex)
+        {
+            // Handle exceptions
+            Console.WriteLine($"An error occurred: {ex.Message}");
+            return null;
+        }
+    }
+
+    public async Task<List<MmDrawing>> FetchMMDataAsync()
+    {
+        try
+        {
+            var response = await _httpClient.GetStringAsync(lottoDataURL);
+            var drawingData = MmDrawing.FromJson(response);
             return drawingData;
         }
         catch (Exception ex)

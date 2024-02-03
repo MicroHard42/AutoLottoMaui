@@ -6,11 +6,11 @@ using AutoLottoMaui.Services;
 namespace AutoLottoMaui.ViewModels;
 public class PowerBallViewModel : BaseViewModel
 {
-    private ObservableCollection<Drawing> _drawing;
+    private ObservableCollection<PbDrawing> _drawing;
     private string _statusMessage;
     private readonly HttpService _httpService;
 
-    public ObservableCollection<Drawing> DrawingHistory
+    public ObservableCollection<PbDrawing> DrawingHistory
     {
         get => _drawing;
         set
@@ -33,8 +33,8 @@ public class PowerBallViewModel : BaseViewModel
 
     public PowerBallViewModel()
     {
-        _drawing = new ObservableCollection<Drawing>();
-        _httpService = new HttpService("https://data.ny.gov/resource/d6yy-54nr.json");
+        _drawing = new ObservableCollection<PbDrawing>();
+        _httpService = new HttpService("https://data.ny.gov/resource/5xaw-6ayf.json");
         FetchDataAsync();
     }
 
@@ -45,9 +45,9 @@ public class PowerBallViewModel : BaseViewModel
         try
         {
             StatusMessage = "Fetching data...";
-            var drawingsList = await _httpService.FetchDataAsync();
+            var drawingsList = await _httpService.FetchPBDataAsync();
 
-            foreach (Drawing draw in drawingsList)
+            foreach (PbDrawing draw in drawingsList)
             {
                 DrawingHistory.Add(draw);
             }

@@ -6,11 +6,11 @@ using AutoLottoMaui.Services;
 namespace AutoLottoMaui.ViewModels;
 public class MegaMillionsViewModel : BaseViewModel
 {
-    private ObservableCollection<Drawing> _drawing;
+    private ObservableCollection<MmDrawing> _drawing;
     private string _statusMessage;
     private readonly HttpService _httpService;
 
-    public ObservableCollection<Drawing> DrawingHistory
+    public ObservableCollection<MmDrawing> DrawingHistory
     {
         get => _drawing;
         set
@@ -33,7 +33,7 @@ public class MegaMillionsViewModel : BaseViewModel
 
     public MegaMillionsViewModel()
     {
-        _drawing = new ObservableCollection<Drawing>();
+        _drawing = new ObservableCollection<MmDrawing>();
         _httpService = new HttpService("https://data.ny.gov/resource/5xaw-6ayf.json");
         FetchDataAsync();
     }
@@ -45,9 +45,9 @@ public class MegaMillionsViewModel : BaseViewModel
         try
         {
             StatusMessage = "Fetching data...";
-            var drawingsList = await _httpService.FetchDataAsync();
+            var drawingsList = await _httpService.FetchMMDataAsync();
 
-            foreach (Drawing draw in drawingsList)
+            foreach (MmDrawing draw in drawingsList)
             {
                 DrawingHistory.Add(draw);
             }

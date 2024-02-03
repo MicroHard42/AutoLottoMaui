@@ -9,27 +9,32 @@
     </ContentPage.BindingContext>
 
 
-<VerticalStackLayout Padding="20">
+<ScrollView>
+        <StackLayout>
+            <!-- Header -->
+            <Grid Padding="10" BackgroundColor="#EDEDED">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="3*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Label Text="Draw Date" Grid.Column="0" FontAttributes="Bold"/>
+                <Label Text="Winning Numbers" Grid.Column="1" FontAttributes="Bold" HorizontalOptions="Center"/>
+                <Label Text="Multiplier" Grid.Column="2" HorizontalOptions="End"/>
+            </Grid>
 
-    <Image
-        HeightRequest="100"
-        HorizontalOptions="Center"
-        Aspect="AspectFit"
-        Source="mega_banner.png">
-    </Image>
-
-
-        <DatePicker x:Name="datePicker" Format="D" />
-        <ListView x:Name="lotteryListView"
-                  ItemsSource="{Binding DrawingHistory}"
-                  ItemSelected="OnItemSelected">
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <TextCell Text="{Binding WinningNumbers}"
-                              Detail="{Binding DrawDate, StringFormat='{0:yyyy-MM-dd}'}" />
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
-
-    </VerticalStackLayout>
+            <!-- Bindable Layout -->
+            <StackLayout BindableLayout.ItemsSource="{Binding DrawingHistory}">
+                <BindableLayout.ItemTemplate>
+                    <DataTemplate>
+                        <FlexLayout Direction="Row" JustifyContent="SpaceBetween" BackgroundColor="White" Margin="5">
+                            <Label Text="{Binding DrawDate, StringFormat='{0:dd/MM/yyyy}'}" FlexLayout.Basis="30%"/>
+                            <Label Text="{Binding WinningNumbers}" FlexLayout.Basis="50%"/>
+                            <Label Text="{Binding Multiplier}" FlexLayout.Basis="20%" HorizontalTextAlignment="End"/>
+                        </FlexLayout>
+                    </DataTemplate>
+                </BindableLayout.ItemTemplate>
+            </StackLayout>
+        </StackLayout>
+    </ScrollView>
 </ContentPage>
