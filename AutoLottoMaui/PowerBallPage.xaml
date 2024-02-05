@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:AutoLottoMaui.ViewModels;assembly=AutoLottoMaui"
              x:Class="AutoLottoMaui.PowerBallPage"
-             Title="PowerBallPage">
+             Title="Powerball Page">
 
     <ContentPage.BindingContext>
         <vm:PowerBallViewModel/>
@@ -22,6 +22,8 @@
                 <Label Text="Winning Numbers" Grid.Column="1" FontAttributes="Bold" HorizontalOptions="Center"/>
                 <Label Text="Multiplier" Grid.Column="2" HorizontalOptions="End"/>
             </Grid>
+            <ActivityIndicator IsVisible="{Binding IsLoading}" IsRunning="{Binding IsLoading}"/>
+
 
             <!-- Bindable Layout -->
             <StackLayout BindableLayout.ItemsSource="{Binding DrawingHistory}">

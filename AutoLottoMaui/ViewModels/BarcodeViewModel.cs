@@ -13,7 +13,7 @@ namespace AutoLottoMaui.ViewModels
 			set
 			{
 				_barcodeValue = value;
-				OnPropertyChanged(nameof(BarcodeValue));
+				OnPropertyChanged();
 			}
 		}
 	}

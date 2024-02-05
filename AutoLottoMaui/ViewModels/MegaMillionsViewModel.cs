@@ -2,21 +2,33 @@ using System.Collections.ObjectModel;
 using System.Windows.Input;
 using AutoLottoMaui.Models;
 using AutoLottoMaui.Services;
+using AutoLottoMaui.Overloads;
 
 namespace AutoLottoMaui.ViewModels;
 public class MegaMillionsViewModel : BaseViewModel
 {
-    private ObservableCollection<MmDrawing> _drawing;
+    private RangeObservableCollection<MmDrawing> _drawing;
     private string _statusMessage;
+    private bool _isLoading;
     private readonly HttpService _httpService;
 
-    public ObservableCollection<MmDrawing> DrawingHistory
+    public bool IsLoading
+    {
+        get => _isLoading;
+        set
+        {
+            _isLoading = value;
+            OnPropertyChanged();
+        }
+    }
+
+    public RangeObservableCollection<MmDrawing> DrawingHistory
     {
         get => _drawing;
         set
         {
             _drawing = value;
-            OnPropertyChanged();
+            OnPropertyChanged(nameof(DrawingHistory));
         }
     }
 
@@ -33,30 +45,39 @@ public class MegaMillionsViewModel : BaseViewModel
 
     public MegaMillionsViewModel()
     {
-        _drawing = new ObservableCollection<MmDrawing>();
-        _httpService = new HttpService("https://data.ny.gov/resource/5xaw-6ayf.json");
-        FetchDataAsync();
+        _drawing = new RangeObservableCollection<MmDrawing>();
+        _httpService = new HttpService("https://data.ny.gov/resource/d6yy-54nr.json");
+        FetchDataCommand = new Command(async () => await FetchDataAsync());
     }
 
-    
 
-    private async void FetchDataAsync()
+
+    private async Task FetchDataAsync()
     {
+
+        if (IsLoading) { return; }
+
+        IsLoading = true;
+
         try
         {
             StatusMessage = "Fetching data...";
             var drawingsList = await _httpService.FetchMMDataAsync();
 
-            foreach (MmDrawing draw in drawingsList)
-            {
-                DrawingHistory.Add(draw);
-            }
+            DrawingHistory.AddRange(drawingsList);
+            OnPropertyChanged(nameof(DrawingHistory));
+
 
             StatusMessage = "Data fetched successfully!";
         }
         catch (Exception ex)
         {
             StatusMessage = $"Error fetching data: {ex.Message}";
+        }
+
+        finally
+        {
+            IsLoading = false;
         }
     }
 }

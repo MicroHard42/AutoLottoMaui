@@ -11,6 +11,15 @@ public partial class PowerBallPage : ContentPage
         _powerballViewModel = (PowerBallViewModel)BindingContext;
     }
 
+    protected override void OnAppearing()
+    {
+        base.OnAppearing();
+        if (!(BindingContext as PowerBallViewModel).DrawingHistory.Any())
+        {
+            (BindingContext as PowerBallViewModel).FetchDataCommand.Execute(null);
+        }
+    }
+
     private void OnItemSelected(object sender, DateChangedEventArgs e)
     {
 

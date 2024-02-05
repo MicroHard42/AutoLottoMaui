@@ -3,13 +3,15 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:AutoLottoMaui.ViewModels;assembly=AutoLottoMaui"
              x:Class="AutoLottoMaui.MegaMillionsPage"
-             x:Name="MegaMillions">
+             x:Name="MegaMillions"
+             Title="Mega Millions">
     <ContentPage.BindingContext>
         <vm:MegaMillionsViewModel/>
     </ContentPage.BindingContext>
 
 
 <ScrollView>
+
         <StackLayout>
             <!-- Header -->
             <Grid Padding="10" BackgroundColor="#EDEDED">
@@ -22,6 +24,8 @@
                 <Label Text="Winning Numbers" Grid.Column="1" FontAttributes="Bold" HorizontalOptions="Center"/>
                 <Label Text="Multiplier" Grid.Column="2" HorizontalOptions="End"/>
             </Grid>
+            <ActivityIndicator IsVisible="{Binding IsLoading}" IsRunning="{Binding IsLoading}"/>
+
 
             <!-- Bindable Layout -->
             <StackLayout BindableLayout.ItemsSource="{Binding DrawingHistory}">

@@ -69,4 +69,10 @@
 		<PackageReference Include="Newtonsoft.json" Version="13.0.3" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <None Remove="Overloads\" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Folder Include="Overloads\" />
+	</ItemGroup>
 </Project>

@@ -12,6 +12,15 @@ public partial class MegaMillionsPage : ContentPage
 		_megaMillionsViewModel = (MegaMillionsViewModel)BindingContext;
 	}
 
+	protected override void OnAppearing()
+	{
+		base.OnAppearing();
+		if (!(BindingContext as MegaMillionsViewModel).DrawingHistory.Any())
+		{
+			(BindingContext as MegaMillionsViewModel).FetchDataCommand.Execute(null);
+		}
+	}
+
     private void OnItemSelected(object sender, DateChangedEventArgs e)
     {
         
