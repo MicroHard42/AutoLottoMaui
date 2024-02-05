@@ -14,11 +14,11 @@
             <!-- Header -->
             <Grid Padding="10" BackgroundColor="#EDEDED">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="3*"/>
+                    <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <Label Text="Draw Date" Grid.Column="0" FontAttributes="Bold"/>
+                <Label Text="Draw Date" Grid.Column="0" FontAttributes="Bold" HorizontalOptions="Start"/>
                 <Label Text="Winning Numbers" Grid.Column="1" FontAttributes="Bold" HorizontalOptions="Center"/>
                 <Label Text="Multiplier" Grid.Column="2" HorizontalOptions="End"/>
             </Grid>
