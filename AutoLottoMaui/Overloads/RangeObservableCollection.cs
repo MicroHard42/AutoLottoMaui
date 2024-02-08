@@ -27,12 +27,12 @@ namespace AutoLottoMaui.Overloads
 
             foreach (T item in list)
             {
-                Add(item);
+                Items.Add(item);
             }
             _suppressNotification = false;
 
-            OnPropertyChanged(new PropertyChangedEventArgs(nameof(Count)));
-            OnPropertyChanged(new PropertyChangedEventArgs(nameof(T) + "[]"));
+            OnPropertyChanged(new PropertyChangedEventArgs(nameof(Items)));
+            OnPropertyChanged(new PropertyChangedEventArgs("Items[]"));
             OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
 
             }

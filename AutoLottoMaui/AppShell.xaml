@@ -9,6 +9,10 @@
 
     <TabBar>
 
+        <Tab Title="My Tickets">
+           <ShellContent ContentTemplate="{DataTemplate local:MyTickets}" Route="MyTickets"/>
+    </Tab>
+
         <Tab Title="Powerball">
            <ShellContent ContentTemplate="{DataTemplate local:PowerBallPage}" Route="PowerBallPage"/>
     </Tab>
@@ -17,9 +21,6 @@
            <ShellContent ContentTemplate="{DataTemplate local:MegaMillionsPage}" Route="MegaMillionsPage"/>
     </Tab>
 
-    <Tab Title="My Tickets">
-           <ShellContent ContentTemplate="{DataTemplate local:MyTickets}" Route="MyTickets"/>
-    </Tab>
 
     </TabBar>
 </Shell>

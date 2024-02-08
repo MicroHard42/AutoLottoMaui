@@ -21,7 +21,6 @@ public partial class MyTickets : ContentPage
         {
             _scannerHandler.ShowScanner();
         });
-        barcodeViewModel.BarcodeValue += "9";
         
     }
     

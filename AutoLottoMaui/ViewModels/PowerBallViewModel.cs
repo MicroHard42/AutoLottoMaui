@@ -30,7 +30,6 @@ public class PowerBallViewModel : BaseViewModel
         set
         {
             _drawing = value;
-            OnPropertyChanged();
         }
     }
 

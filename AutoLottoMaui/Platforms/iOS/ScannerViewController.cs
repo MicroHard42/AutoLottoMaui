@@ -54,7 +54,7 @@ public class ScannerViewController : UIViewController, IAVCaptureMetadataOutputO
 
             metadataOutput.SetDelegate(this, DispatchQueue.MainQueue);
             //Change array to add expected barcode Specs for detection
-            metadataOutput.WeakMetadataObjectTypes = new NSString[] {AVMetadataObjectType.Code39Code.GetConstant(), AVMetadataObjectType.QRCode.GetConstant()};
+            metadataOutput.WeakMetadataObjectTypes = new NSString[] {AVMetadataObjectType.ITF14Code.GetConstant(),AVMetadataObjectType.QRCode.GetConstant()};
         }
         else
         {

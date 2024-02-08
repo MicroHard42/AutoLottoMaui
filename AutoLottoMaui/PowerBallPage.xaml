@@ -5,11 +5,11 @@
              x:Class="AutoLottoMaui.PowerBallPage"
              Title="Powerball Page">
 
-    <ContentPage.BindingContext>
+   <ContentPage.BindingContext>
         <vm:PowerBallViewModel/>
     </ContentPage.BindingContext>
 
-   <ScrollView>
+    <ScrollView>
         <StackLayout>
             <!-- Header -->
             <Grid Padding="10" BackgroundColor="#EDEDED">
@@ -24,19 +24,18 @@
             </Grid>
             <ActivityIndicator IsVisible="{Binding IsLoading}" IsRunning="{Binding IsLoading}"/>
 
-
-            <!-- Bindable Layout -->
-            <StackLayout BindableLayout.ItemsSource="{Binding DrawingHistory}">
-                <BindableLayout.ItemTemplate>
+            <!-- CollectionView for Drawing History -->
+            <CollectionView ItemsSource="{Binding DrawingHistory}">
+                <CollectionView.ItemTemplate>
                     <DataTemplate>
                         <FlexLayout Direction="Row" JustifyContent="SpaceBetween" BackgroundColor="White" Margin="5">
-                            <Label Text="{Binding DrawDate, StringFormat='{0:dd/MM/yyyy}'}" FlexLayout.Basis="30%"/>
-                            <Label Text="{Binding WinningNumbers}" FlexLayout.Basis="50%"/>
-                            <Label Text="{Binding Multiplier}" FlexLayout.Basis="20%" HorizontalTextAlignment="End"/>
+                            <Label Text="{Binding DrawDate, StringFormat='{0:dd/MM/yyyy}'}" FlexLayout.Grow="1"/>
+                            <Label Text="{Binding WinningNumbers}" FlexLayout.Grow="3"/>
+                            <Label Text="{Binding Multiplier}" FlexLayout.Grow="1" HorizontalTextAlignment="End"/>
                         </FlexLayout>
                     </DataTemplate>
-                </BindableLayout.ItemTemplate>
-            </StackLayout>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
         </StackLayout>
     </ScrollView>
 
