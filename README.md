@@ -1,5 +1,5 @@
 # AutoLottoMaui
- Lottery winning numbers viewer built with MAUI.
+ Lottery winning numbers viewer built with .NET MAUI.
 
  ** Mainly a demonstration of using native Barcode Scanning UIViewController with MAUI for iOS.
 
