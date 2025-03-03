@@ -1,40 +1,33 @@
 #!/bin/bash
 
-# Usage: ./repackage_ipa.sh <original.ipa> <provisioning_profile.mobileprovision> "<Signing Identity>" <ExpandedEntitlements.xcent>
+# Usage: ./repackage_ipa.sh <source.ipa> <target.ipa> <provisioning_profile.mobileprovision> "<Signing Identity>" <ExpandedEntitlements.xcent>
 # Example:
-#   ./repackage_ipa.sh OldApp.ipa MyProfile.mobileprovision "Apple Development: Jane Doe (TEAMID)" ExpandedEntitlements.xcent
+#   ./repackage_ipa.sh SourceApp.ipa TargetApp.ipa MyProfile.mobileprovision "Apple Development: Jane Doe (TEAMID)" ExpandedEntitlements.xcent
 #
-# Replaces provisioning profile, Info.plist, and re-signs an IPA while preserving the original executable.
+# Moves over the Info.plist and provisioning profile, re-signs the IPA while preserving the original executable.
 
 # Exit on error
 set -e
 
 # Check input arguments
-if [[ $# -ne 4 ]]; then
-    echo "Usage: $(basename "$0") <original.ipa> <provisioning_profile.mobileprovision> \"<Signing Identity>\" <ExpandedEntitlements.xcent>"
+if [[ $# -ne 5 ]]; then
+    echo "Usage: $(basename "$0") <source.ipa> <target.ipa> <provisioning_profile.mobileprovision> \"<Signing Identity>\" <ExpandedEntitlements.xcent>"
     exit 1
 fi
 
-IPA_PATH="$1"
-PROVISION_PATH="$2"
-SIGN_ID="$3"
-ENTITLEMENTS_FILE="$4"
+SOURCE_IPA="$1"
+TARGET_IPA="$2"
+PROVISION_PATH="$3"
+SIGN_ID="$4"
+ENTITLEMENTS_FILE="$5"
 
 # Validate files
-if [[ ! -f "$IPA_PATH" ]]; then
-    echo "Error: IPA file '$IPA_PATH' not found."
-    exit 1
-fi
-
-if [[ ! -f "$PROVISION_PATH" ]]; then
-    echo "Error: Provisioning profile '$PROVISION_PATH' not found."
-    exit 1
-fi
-
-if [[ ! -f "$ENTITLEMENTS_FILE" ]]; then
-    echo "Error: Entitlements file '$ENTITLEMENTS_FILE' not found."
-    exit 1
-fi
+for FILE in "$SOURCE_IPA" "$TARGET_IPA" "$PROVISION_PATH" "$ENTITLEMENTS_FILE"; do
+    if [[ ! -f "$FILE" ]]; then
+        echo "Error: Required file '$FILE' not found."
+        exit 1
+    fi
+done
 
 # Validate signing identity
 if ! security find-identity -p codesigning -v | grep -q "$SIGN_ID"; then
@@ -42,53 +35,59 @@ if ! security find-identity -p codesigning -v | grep -q "$SIGN_ID"; then
     exit 1
 fi
 
-# Create working directories
-TMP_DIR=$(mktemp -d)
-trap 'rm -rf "$TMP_DIR"' EXIT  # Cleanup on script exit
+# Create temporary directories
+TMP_SRC=$(mktemp -d)
+TMP_TGT=$(mktemp -d)
+trap 'rm -rf "$TMP_SRC" "$TMP_TGT"' EXIT  # Cleanup on exit
 
-# Extract IPA contents
-echo "Extracting IPA..."
-unzip -q "$IPA_PATH" -d "$TMP_DIR"
+# Extract source and target IPAs
+echo "Extracting source IPA..."
+unzip -q "$SOURCE_IPA" -d "$TMP_SRC"
+echo "Extracting target IPA..."
+unzip -q "$TARGET_IPA" -d "$TMP_TGT"
 
-# Locate the .app directory
-APP_DIR=$(find "$TMP_DIR/Payload" -type d -name "*.app" | head -n 1)
-if [[ -z "$APP_DIR" ]]; then
-    echo "Error: .app bundle not found in IPA."
+# Locate the .app directories
+SRC_APP=$(find "$TMP_SRC/Payload" -type d -name "*.app" | head -n 1)
+TGT_APP=$(find "$TMP_TGT/Payload" -type d -name "*.app" | head -n 1)
+
+if [[ -z "$SRC_APP" || -z "$TGT_APP" ]]; then
+    echo "Error: .app bundle not found in one or both IPAs."
     exit 1
 fi
-echo "Found app bundle: $APP_DIR"
+echo "Found source app bundle: $SRC_APP"
+echo "Found target app bundle: $TGT_APP"
 
-# Replace the provisioning profile
+# Replace the provisioning profile in the target app
 echo "Replacing provisioning profile..."
-cp "$PROVISION_PATH" "$APP_DIR/embedded.mobileprovision"
+cp "$PROVISION_PATH" "$TGT_APP/embedded.mobileprovision"
 
-# Extract Info.plist (optional, keeping original structure)
-echo "Extracting and converting Info.plist..."
-plutil -convert xml1 "$APP_DIR/Info.plist" -o "$TMP_DIR/Info.xml"
+# Replace Info.plist from source app
+echo "Replacing Info.plist from source IPA..."
+cp "$SRC_APP/Info.plist" "$TGT_APP/Info.plist"
 
-# Convert back to binary to ensure compatibility
-plutil -convert binary1 "$TMP_DIR/Info.xml" -o "$APP_DIR/Info.plist"
+# Ensure Info.plist is properly formatted
+plutil -convert binary1 "$TGT_APP/Info.plist"
 
-# Remove old signature data
+# Remove old signature data from the target app
 echo "Stripping old signature..."
-rm -rf "$APP_DIR/_CodeSignature" 2>/dev/null
+rm -rf "$TGT_APP/_CodeSignature" 2>/dev/null
 
 # Ensure frameworks are properly signed
-if [[ -d "$APP_DIR/Frameworks" ]]; then
+if [[ -d "$TGT_APP/Frameworks" ]]; then
     echo "Signing frameworks..."
-    for FRAMEWORK in "$APP_DIR/Frameworks/"*.framework; do
+    for FRAMEWORK in "$TGT_APP/Frameworks/"*.framework; do
         codesign -f -s "$SIGN_ID" --preserve-metadata=identifier,entitlements "$FRAMEWORK"
     done
 fi
 
 # Re-sign the app bundle with entitlements
 echo "Re-signing the app with '$SIGN_ID'..."
-codesign -f -s "$SIGN_ID" --entitlements "$ENTITLEMENTS_FILE" --preserve-metadata=identifier,entitlements "$APP_DIR"
+codesign -f -s "$SIGN_ID" --entitlements "$ENTITLEMENTS_FILE" --preserve-metadata=identifier,entitlements "$TGT_APP"
 
 # Repackage the IPA
-NEW_IPA="${IPA_PATH%.ipa}-resigned.ipa"
+NEW_IPA="${TARGET_IPA%.ipa}-resigned.ipa"
 echo "Repackaging IPA..."
-cd "$TMP_DIR"
+cd "$TMP_TGT"
 zip -qr "../$NEW_IPA" Payload
 cd -
 
@@ -97,7 +96,7 @@ echo "Success! New IPA created: $NEW_IPA"
 # Optional: Install the IPA to a connected iPhone
 if command -v ios-deploy >/dev/null 2>&1; then
     echo "Installing IPA to iPhone..."
-    ios-deploy --bundle "$APP_DIR" || echo "Installation via ios-deploy failed. Ensure Developer Mode is enabled on your iPhone."
+    ios-deploy --bundle "$TGT_APP" || echo "Installation via ios-deploy failed. Ensure Developer Mode is enabled on your iPhone."
 elif command -v ideviceinstaller >/dev/null 2>&1; then
     echo "Installing IPA to iPhone using ideviceinstaller..."
     ideviceinstaller -i "$NEW_IPA" || echo "Installation failed. Ensure your provisioning profile is correct."
